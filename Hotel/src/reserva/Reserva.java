@@ -2,7 +2,7 @@ package reserva;
 
 import java.util.Date;
 
-import Habitacion.Habitacion;
+import habitacion.Habitacion;
 import reserva.state.IReservaState;
 import usuario.Huesped;
 
@@ -18,7 +18,8 @@ public class Reserva {
     this.gestorFacturacion = new GestorFacturacion(this);
   }
 
-  public Reserva(Huesped huesped, Habitacion habitacion, Date fechaInicio, Date fechaFin, IReservaState estado, double costoTotal) {
+  public Reserva(Huesped huesped, Habitacion habitacion, Date fechaInicio, Date fechaFin, IReservaState estado,
+      double costoTotal) {
     this.huesped = huesped;
     this.habitacion = habitacion;
     this.fechaInicio = fechaInicio;
@@ -26,11 +27,6 @@ public class Reserva {
     this.estado = estado;
     this.gestorFacturacion = new GestorFacturacion(this);
   }
-
-
-
-
-
 
   public Huesped getHuesped() {
     return huesped;
@@ -71,13 +67,13 @@ public class Reserva {
   public void setEstado(IReservaState estado) {
     this.estado = estado;
   }
-  
+
   public GestorFacturacion getGestorFacturacion() {
     return gestorFacturacion;
   }
 
-public void setId(int id) {
+  public void setId(int id) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'setId'");
-}
+  }
 }

@@ -1,5 +1,5 @@
-package Habitacion.tipo;
+package habitacion.tipo;
 
 public interface IHabitacionTipo {
-	  String getNombre();
-	}
+  String getNombre();
+}

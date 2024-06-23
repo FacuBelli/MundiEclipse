@@ -1,6 +1,6 @@
-package Habitacion.state;
+package habitacion.state;
 
-import Habitacion.Habitacion;
+import habitacion.Habitacion;
 
 public class Mantenimiento implements IHabitacionState {
   private Habitacion habitacion;

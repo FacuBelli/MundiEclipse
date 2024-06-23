@@ -1,7 +1,6 @@
-package Habitacion.state;
+package habitacion.state;
 
-
-import Habitacion.Habitacion;
+import habitacion.Habitacion;
 
 public class Ocupado implements IHabitacionState {
   private Habitacion habitacion;
@@ -20,4 +19,3 @@ public class Ocupado implements IHabitacionState {
     habitacion.setEstado(new Mantenimiento(habitacion));
   }
 }
-

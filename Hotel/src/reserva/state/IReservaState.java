@@ -1,7 +1,7 @@
 package reserva.state;
 
 public interface IReservaState {
-	  public String estado();
+  public String estado();
 
-	  public void siguiente();
-	}
+  public void siguiente();
+}

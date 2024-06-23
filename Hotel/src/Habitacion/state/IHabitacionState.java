@@ -1,7 +1,7 @@
-package Habitacion.state;
+package habitacion.state;
 
 public interface IHabitacionState {
-	  String estado();
+  String estado();
 
-	  void siguiente();
-	}
+  void siguiente();
+}

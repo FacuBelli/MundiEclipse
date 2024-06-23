@@ -1,10 +1,10 @@
-package Habitacion.tipo;
+package habitacion.tipo;
 
 public class Suite implements IHabitacionTipo {
-	  private final String nombre = "Suite";
+  private final String nombre = "Suite";
 
-	  @Override
-	  public String getNombre() {
-	    return nombre;
-	  }
-	}
+  @Override
+  public String getNombre() {
+    return nombre;
+  }
+}
