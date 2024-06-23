@@ -7,6 +7,10 @@ public class Factura {
     this.gestorFacturacion = gestorFacturacion;
   }
 
+  public GestorFacturacion getGestorFacturacion() {
+    return gestorFacturacion;
+  }
+
   public void imprimir() {
     System.out.println("Imprimiendo factura...");
     // Recorrer pagos...

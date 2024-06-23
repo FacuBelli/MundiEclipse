@@ -13,7 +13,8 @@ public class GestorFacturacion {
   }
 
   public double calcularSubtotal() {
-    subtotal = reserva.getHabitacion().getTarifa();
+    long dias = Math.ceilDiv(reserva.getFechaFin().getTime() - reserva.getFechaInicio().getTime(), (long) 8.64e+7);
+    subtotal = reserva.getHabitacion().getTarifa() * dias;
     return subtotal;
   }
 
