@@ -6,6 +6,7 @@ import java.util.List;
 import habitacion.Habitacion;
 import habitacion.HabitacionBuilder;
 import habitacion.tipo.IHabitacionTipo;
+import reserva.Factura;
 import reserva.Reserva;
 import reserva.ReservaBuilder;
 import usuario.Huesped;
@@ -28,10 +29,26 @@ public class FacadeHoteleria {
     this.reservas = new ArrayList<>();
   }
 
-  public Huesped registrarHuesped(String nombre, String apellido, String dni, String telefono, String email) {
-    Huesped huesped = userFactory.createHuesped(nombre, apellido, dni, telefono, email);
+  public Huesped registrarHuesped(String dni, String nombre, String apellido, String telefono, String email) {
+    Huesped huesped = userFactory.createHuesped(dni, nombre, apellido, telefono, email);
     huespedes.add(huesped);
     return huesped;
+  }
+
+  public List<Huesped> obtenerHuespedes() {
+    return huespedes;
+  }
+
+  public Huesped obtenerHuesped(String dni) {
+    Huesped result = null;
+    for (Huesped huesped : huespedes) {
+      if (huesped.getDni() == dni) {
+        result = huesped;
+        break;
+      }
+    }
+
+    return result;
   }
 
   public Habitacion cargarHabitacion(int identificador, IHabitacionTipo tipo, int capacidad, double tarifa,
@@ -49,7 +66,19 @@ public class FacadeHoteleria {
     return habitacion;
   }
 
-  public List<Habitacion> buscarHabitacion(IHabitacionTipo tipo, int capacidad) {
+  public Habitacion obtenerHabitacion(int identificador) {
+    Habitacion result = null;
+    for (Habitacion habitacion : habitaciones) {
+      if (habitacion.getIdentificador() == identificador) {
+        result = habitacion;
+        break;
+      }
+    }
+
+    return result;
+  }
+
+  public List<Habitacion> obtenerHabitacion(IHabitacionTipo tipo, int capacidad) {
     List<Habitacion> result = new ArrayList<>();
     for (Habitacion habitacion : habitaciones) {
       if (habitacion.getTipo().equals(tipo) && habitacion.getCapacidad() == capacidad) {
@@ -67,8 +96,28 @@ public class FacadeHoteleria {
         .fechaInicio(fechaInicio)
         .fechaFin(fechaFin)
         .build();
+    reserva.getGestorFacturacion().calcularSubtotal();
     reservas.add(reserva);
     return reserva;
   }
 
+  public Reserva obtenerReserva(Habitacion habitacion, Huesped huesped) {
+    Reserva result = null;
+    for (Reserva reserva : reservas) {
+      if (reserva.getHabitacion().equals(habitacion) && reserva.getHuesped().equals(huesped)) {
+        result = reserva;
+        break;
+      }
+    }
+
+    return result;
+  }
+
+  public void cancelarReserva(Reserva reserva) {
+    reserva.cancelar();
+  }
+
+  public Factura obtenerFactura(Reserva reserva) {
+    return reserva.getGestorFacturacion().generarFactura();
+  }
 }

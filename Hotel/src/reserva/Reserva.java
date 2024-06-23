@@ -3,6 +3,7 @@ package reserva;
 import java.util.Date;
 
 import habitacion.Habitacion;
+import reserva.state.Cancelado;
 import reserva.state.IReservaState;
 import usuario.Huesped;
 
@@ -72,8 +73,7 @@ public class Reserva {
     return gestorFacturacion;
   }
 
-  public void setId(int id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setId'");
+  public void cancelar() {
+    this.setEstado(new Cancelado(this));
   }
 }
