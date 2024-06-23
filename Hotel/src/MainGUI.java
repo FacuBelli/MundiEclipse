@@ -37,25 +37,27 @@ public class MainGUI {
         btnBuscarHabitaciones.addActionListener(new ManejadorBuscarHabitaciones());
         panel.add(btnBuscarHabitaciones);
 
-        JButton btnReservarHabitacion = new JButton("Reservar Habitación");
-        btnReservarHabitacion.addActionListener(new ManejadorReservarHabitacion());
-        panel.add(btnReservarHabitacion);
+        JButton btnReservar = new JButton("Reservar Habitación");
+        btnReservar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Llamar al método para reservar habitación
+                reservarHabitacion();
+            }
+        });
+        panel.add(btnReservar);
 
-        JButton btnCancelarReserva = new JButton("Cancelar Reserva");
-        btnCancelarReserva.addActionListener(new ManejadorCancelarReserva());
-        panel.add(btnCancelarReserva);
+        JButton btnCancelar = new JButton("Cancelar Reserva");
+        btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Llamar al método para cancelar reserva de habitación
+                cancelarReserva();
+            }
+        });
+        panel.add(btnCancelar);
 
-        JButton btnActualizarFacturacion = new JButton("Actualizar Facturación");
-        btnActualizarFacturacion.addActionListener(new ManejadorActualizarFacturacion());
-        panel.add(btnActualizarFacturacion);
 
-        JButton btnEnviarFacturas = new JButton("Enviar Facturas");
-        btnEnviarFacturas.addActionListener(new ManejadorEnviarFacturas());
-        panel.add(btnEnviarFacturas);
-
-        JButton btnGenerarReporte = new JButton("Generar Reporte");
-        btnGenerarReporte.addActionListener(new ManejadorGenerarReporte());
-        panel.add(btnGenerarReporte);
 
         frame.setVisible(true);
     }
@@ -232,6 +234,53 @@ public class MainGUI {
     private void handleGenerarReporte() {
         System.out.println("Generar Reporte");
         // Aquí puedes implementar la lógica para generar un reporte del sistema
+    }
+
+    private void reservarHabitacion() {
+            // Mostrar un formulario para ingresar los datos de la reserva
+            JTextField txtNombre = new JTextField(20);
+            JTextField txtFechaInicio = new JTextField(10);
+            JTextField txtFechaFin = new JTextField(10);
+        
+            JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
+            panelFormulario.add(new JLabel("Nombre del huésped:"));
+            panelFormulario.add(txtNombre);
+            panelFormulario.add(new JLabel("Fecha de inicio (dd/mm/aaaa):"));
+            panelFormulario.add(txtFechaInicio);
+            panelFormulario.add(new JLabel("Fecha de fin (dd/mm/aaaa):"));
+            panelFormulario.add(txtFechaFin);
+        
+            int opcion = JOptionPane.showConfirmDialog(frame, panelFormulario, "Reservar Habitación",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        
+            if (opcion == JOptionPane.OK_OPTION) {
+                String nombreHuesped = txtNombre.getText();
+                String fechaInicio = txtFechaInicio.getText();
+                String fechaFin = txtFechaFin.getText();
+        
+                // Aquí iría la lógica para verificar disponibilidad de habitaciones
+                boolean habitacionDisponible = verificarDisponibilidad();
+        
+                if (habitacionDisponible) {
+                    // Si la habitación está disponible, realizar la reserva
+                    // Aquí puedes implementar el código para guardar la reserva en una base de datos o archivo
+                    JOptionPane.showMessageDialog(frame, "Reserva realizada correctamente para " + nombreHuesped +
+                            " del " + fechaInicio + " al " + fechaFin);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Lo sentimos, no hay habitaciones disponibles para ese periodo.");
+                }
+            }
+        }
+
+    private boolean verificarDisponibilidad() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'verificarDisponibilidad'");
+    }
+
+    // Método para cancelar la reserva de una habitación
+    private void cancelarReserva() {
+        JOptionPane.showMessageDialog(frame, "Reserva cancelada presencialmente o vía web.");
+        // Aquí puedes implementar la lógica para cancelar la reserva de la habitación
     }
 
     public static void main(String[] args) {

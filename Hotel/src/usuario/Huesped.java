@@ -1,48 +1,35 @@
 package usuario;
 
-import java.util.List;
-
-import reserva.metodoDePago.MetodoDePago;
-
 public class Huesped extends User {
-  private List<MetodoDePago> metodosDePago;
-  private Boolean contactoSMS;
-  private Boolean contactoWhatsApp;
-  private Boolean contactoEmail;
+    private boolean contactoSMS;
+    private boolean contactoWhatsApp;
+    private boolean contactoEmail;
 
-  public Huesped(String dni, String nombre, String apellido, String telefono, String email) {
-    super(dni, nombre, apellido, telefono, email);
-  }
+    public Huesped(String dni, String nombre, String apellido, String telefono, String email) {
+        super(dni, nombre, apellido, telefono, email);
+    }
 
-  public List<MetodoDePago> getMetodosDePago() {
-    return metodosDePago;
-  }
+    public boolean getContactoSMS() {
+        return contactoSMS;
+    }
 
-  public void setMetodosDePago(List<MetodoDePago> metodosDePago) {
-    this.metodosDePago = metodosDePago;
-  }
+    public void setContactoSMS(boolean contactoSMS) {
+        this.contactoSMS = contactoSMS;
+    }
 
-  public Boolean getContactoSMS() {
-    return contactoSMS;
-  }
+    public boolean getContactoWhatsApp() {
+        return contactoWhatsApp;
+    }
 
-  public void setContactoSMS(Boolean contactoSMS) {
-    this.contactoSMS = contactoSMS;
-  }
+    public void setContactoWhatsApp(boolean contactoWhatsApp) {
+        this.contactoWhatsApp = contactoWhatsApp;
+    }
 
-  public Boolean getContactoWhatsApp() {
-    return contactoWhatsApp;
-  }
+    public boolean getContactoEmail() {
+        return contactoEmail;
+    }
 
-  public void setContactoWhatsApp(Boolean contactoWhatsApp) {
-    this.contactoWhatsApp = contactoWhatsApp;
-  }
-
-  public Boolean getContactoEmail() {
-    return contactoEmail;
-  }
-
-  public void setContactoEmail(Boolean contactoEmail) {
-    this.contactoEmail = contactoEmail;
-  }
+    public void setContactoEmail(boolean contactoEmail) {
+        this.contactoEmail = contactoEmail;
+    }
 }

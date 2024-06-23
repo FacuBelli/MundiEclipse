@@ -10,7 +10,7 @@ public class Disponible implements IHabitacionState {
   }
 
   @Override
-  public String estado() {
+  public String getEstado() {
     return "Disponible";
   }
 

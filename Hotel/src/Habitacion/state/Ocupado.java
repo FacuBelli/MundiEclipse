@@ -10,7 +10,7 @@ public class Ocupado implements IHabitacionState {
   }
 
   @Override
-  public String estado() {
+  public String getEstado() {
     return "Ocupado";
   }
 
