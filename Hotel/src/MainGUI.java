@@ -1,10 +1,19 @@
 import javax.swing.*;
+
+import habitacion.Habitacion;
+import habitacion.state.Disponible;
+import reserva.Reserva;
+import reserva.state.IReservaState;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import usuario.Huesped; 
 
@@ -236,46 +245,109 @@ public class MainGUI {
         // Aquí puedes implementar la lógica para generar un reporte del sistema
     }
 
-    private void reservarHabitacion() {
-            // Mostrar un formulario para ingresar los datos de la reserva
-            JTextField txtNombre = new JTextField(20);
-            JTextField txtFechaInicio = new JTextField(10);
-            JTextField txtFechaFin = new JTextField(10);
-        
-            JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
-            panelFormulario.add(new JLabel("Nombre del huésped:"));
-            panelFormulario.add(txtNombre);
-            panelFormulario.add(new JLabel("Fecha de inicio (dd/mm/aaaa):"));
-            panelFormulario.add(txtFechaInicio);
-            panelFormulario.add(new JLabel("Fecha de fin (dd/mm/aaaa):"));
-            panelFormulario.add(txtFechaFin);
-        
-            int opcion = JOptionPane.showConfirmDialog(frame, panelFormulario, "Reservar Habitación",
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-        
-            if (opcion == JOptionPane.OK_OPTION) {
-                String nombreHuesped = txtNombre.getText();
-                String fechaInicio = txtFechaInicio.getText();
-                String fechaFin = txtFechaFin.getText();
-        
-                // Aquí iría la lógica para verificar disponibilidad de habitaciones
-                boolean habitacionDisponible = verificarDisponibilidad();
-        
-                if (habitacionDisponible) {
-                    // Si la habitación está disponible, realizar la reserva
-                    // Aquí puedes implementar el código para guardar la reserva en una base de datos o archivo
-                    JOptionPane.showMessageDialog(frame, "Reserva realizada correctamente para " + nombreHuesped +
-                            " del " + fechaInicio + " al " + fechaFin);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Lo sentimos, no hay habitaciones disponibles para ese periodo.");
-                }
-            }
+private void reservarHabitacion() {
+    // Mostrar un formulario para ingresar los datos de la reserva
+    JTextField txtNombreHuesped = new JTextField(20);
+    JTextField txtFechaInicio = new JTextField(10);
+    JTextField txtFechaFin = new JTextField(10);
+
+    // Supongamos que tenemos una lista de habitaciones disponibles
+    String[] habitacionesDisponibles = {"101", "102", "103"};  // Esto debería obtenerse de tu sistema
+    JComboBox<String> comboHabitacion = new JComboBox<>(habitacionesDisponibles);
+
+    // Supongamos que tenemos estados posibles para una reserva
+    String[] estadosReserva = {"Activo", "Cancelado"};
+    JComboBox<String> comboEstado = new JComboBox<>(estadosReserva);
+
+    JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
+    panelFormulario.add(new JLabel("Nombre del huésped:"));
+    panelFormulario.add(txtNombreHuesped);
+    panelFormulario.add(new JLabel("Fecha de inicio (dd/mm/aaaa):"));
+    panelFormulario.add(txtFechaInicio);
+    panelFormulario.add(new JLabel("Fecha de fin (dd/mm/aaaa):"));
+    panelFormulario.add(txtFechaFin);
+    panelFormulario.add(new JLabel("Habitación:"));
+    panelFormulario.add(comboHabitacion);
+    panelFormulario.add(new JLabel("Estado de la Reserva:"));
+    panelFormulario.add(comboEstado);
+
+    int opcion = JOptionPane.showConfirmDialog(frame, panelFormulario, "Reservar Habitación",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+    if (opcion == JOptionPane.OK_OPTION) {
+        String nombreHuesped = txtNombreHuesped.getText();
+        String fechaInicioStr = txtFechaInicio.getText();
+        String fechaFinStr = txtFechaFin.getText();
+        String habitacionSeleccionada = (String) comboHabitacion.getSelectedItem();
+        String estadoSeleccionado = (String) comboEstado.getSelectedItem();
+
+        // Conversión de fechas
+        Date fechaInicio = null;
+        Date fechaFin = null;
+        try {
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+            fechaInicio = formatoFecha.parse(fechaInicioStr);
+            fechaFin = formatoFecha.parse(fechaFinStr);
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(frame, "Formato de fecha incorrecto.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-    private boolean verificarDisponibilidad() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'verificarDisponibilidad'");
+        // Verificar disponibilidad de habitaciones
+        boolean habitacionDisponible = verificarDisponibilidad(fechaInicio, fechaFin, habitacionSeleccionada);
+
+        if (habitacionDisponible) {
+            // Crear una instancia de Huesped y Habitacion
+            Huesped huesped = new Huesped(nombre);  // Asumiendo que tienes un constructor adecuado
+            Habitacion habitacion = new Habitacion(tipo);  // Asumiendo que tienes un constructor adecuado
+
+            // Crear una instancia del estado (Aquí deberías tener lógica para convertir el string en un estado real)
+            IReservaState estado = new Activo();  // Esto es un ejemplo, ajusta según tus estados
+
+            // Crear y guardar la reserva
+            Reserva nuevaReserva = new Reserva(huesped, habitacion, fechaInicio, fechaFin, estado, 0.0);
+            guardarReserva(nuevaReserva);
+            JOptionPane.showMessageDialog(frame, "Reserva realizada correctamente para " + nombreHuesped +
+                    " del " + fechaInicioStr + " al " + fechaFinStr);
+        } else {
+            JOptionPane.showMessageDialog(frame, "Lo sentimos, no hay habitaciones disponibles para ese periodo.");
+        }
     }
+}
+
+private boolean verificarDisponibilidad(Date fechaInicio, Date fechaFin, String habitacionSeleccionada) {
+    // Aquí deberías implementar la lógica para verificar la disponibilidad de habitaciones
+    // Por simplicidad, este método siempre devuelve true
+    return true;
+}
+
+private void guardarReserva(Reserva reserva) {
+    String nombreArchivo = "reservas.txt";
+
+    try {
+        FileWriter fw = new FileWriter(nombreArchivo, true);
+        BufferedWriter bw = new BufferedWriter(fw);
+
+        // Crear una cadena con los datos de la reserva
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+        String datosReserva = reserva.getHuesped().getNombre() + "," +
+                              reserva.getHabitacion().getIdentificador() + "," +
+                              formatoFecha.format(reserva.getFechaInicio()) + "," +
+                              formatoFecha.format(reserva.getFechaFin()) + "," +
+                              reserva.getEstado().getClass().getSimpleName();
+
+        // Escribir los datos de la reserva en el archivo
+        bw.write(datosReserva);
+        bw.newLine();  // Agregar nueva línea para separar cada reserva
+
+        // Cerrar el BufferedWriter
+        bw.close();
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(frame, "Error al guardar la reserva.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
 
     // Método para cancelar la reserva de una habitación
     private void cancelarReserva() {
