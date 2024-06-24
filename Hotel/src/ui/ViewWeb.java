@@ -8,7 +8,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import facade.FacadeHoteleria;
+
 public class ViewWeb extends JPanel {
+<<<<<<< HEAD
     private JFrame frame;
 
     public ViewWeb() {
@@ -39,4 +42,13 @@ public class ViewWeb extends JPanel {
     private void mostrarFormularioCargaHuesped() {
         // Aquí implementas la lógica para mostrar el formulario de carga de huésped
     }
+=======
+  FacadeHoteleria facade;
+
+  public ViewWeb(FacadeHoteleria facade) {
+    this.facade = facade;
+    this.add(new JLabel("View Web"));
+    this.setVisible(true);
+  }
+>>>>>>> 6ea34d8f993cdadafa930e912266c364d1f5c21b
 }
