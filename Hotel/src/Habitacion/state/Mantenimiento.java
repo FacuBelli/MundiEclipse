@@ -10,18 +10,12 @@ public class Mantenimiento implements IHabitacionState {
   }
 
   @Override
-  public String estado() {
+  public String getEstado() {
     return "Mantenimiento";
   }
 
   @Override
   public void siguiente() {
     habitacion.setEstado(new Disponible(habitacion));
-  }
-
-  @Override
-  public String getEstado() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getEstado'");
   }
 }
