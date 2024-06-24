@@ -49,7 +49,7 @@ public class MainGUI {
         }
 
         if (rolSeleccionado == "Rol1"){
-            frame = new JFrame("Sistema de Gestión Hotelera");
+        frame = new JFrame("Sistema de Gestión Hotelera");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
@@ -95,6 +95,11 @@ public class MainGUI {
             public void actionPerformed(ActionEvent e) {
                 // Llamar al método para cancelar reserva de habitación
                 cancelarReserva();
+            }
+
+            private void cancelarReserva() {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'cancelarReserva'");
             }
         });
         panel.add(btnCancelar);
@@ -256,9 +261,9 @@ private class ManejadorCargarHabitaciones implements ActionListener {
             String descripcion = txtDescripcion.getText();
 
             IHabitacionTipo tipo = new TipoHabitacion(tipoStr);
-            IHabitacionState estado = new Disponible(); // Por defecto, asignar un estado disponible
+            IHabitacionState estado = new Disponible(null); // Por defecto, asignar un estado disponible
 
-            Habitacion nuevaHabitacion = new Habitacion(identificador, tipo, estado, capacidad, tarifa, balcon, descripcion);
+            Habitacion nuevaHabitacion = new Habitacion();
             habitaciones.add(nuevaHabitacion);
 
             guardarHabitacion(nuevaHabitacion);
