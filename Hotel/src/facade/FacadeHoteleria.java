@@ -67,6 +67,10 @@ public class FacadeHoteleria {
     return habitacion;
   }
 
+  public List<Habitacion> obtenerHabitaciones() {
+    return habitaciones;
+  }
+
   public Habitacion obtenerHabitacion(int identificador) {
     Habitacion result = null;
     for (Habitacion habitacion : habitaciones) {
@@ -100,6 +104,10 @@ public class FacadeHoteleria {
     reserva.getGestorFacturacion().calcularSubtotal();
     reservas.add(reserva);
     return reserva;
+  }
+
+  public List<Reserva> obtenerReservas() {
+    return reservas;
   }
 
   public Reserva obtenerReserva(Habitacion habitacion, Huesped huesped) {
