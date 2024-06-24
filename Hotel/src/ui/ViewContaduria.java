@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 import facade.FacadeHoteleria;
 
 public class ViewContaduria extends JPanel {
-  FacadeHoteleria facade;
+  private FacadeHoteleria facade;
 
   public ViewContaduria(FacadeHoteleria facade) {
     this.facade = facade;
