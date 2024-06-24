@@ -108,7 +108,7 @@ public class ViewWeb extends JPanel {
   private void buscarHabitaciones() {
       // Lógica para buscar habitaciones, puedes implementarla según tu necesidad
       // En este ejemplo, se muestra cómo obtener las habitaciones y mostrarlas en un diálogo
-      List<Habitacion> habitaciones = facade.getHabitaciones(); // Obtener las habitaciones desde la fachada
+      List<Habitacion> habitaciones = facade.obtenerHabitaciones(); // Obtener las habitaciones desde la fachada
 
       StringBuilder mensaje = new StringBuilder("Habitaciones Disponibles:\n");
       for (Habitacion habitacion : habitaciones) {
@@ -133,4 +133,95 @@ public class ViewWeb extends JPanel {
       JOptionPane.showMessageDialog(this, "Huesped guardado correctamente.", "Éxito",
               JOptionPane.INFORMATION_MESSAGE);
   }
+
+  private void mostrarFormularioCargaHabitacion() {
+    JTextField txtIdentificador = new JTextField(10);
+    JTextField txtCapacidad = new JTextField(10);
+    JTextField txtTarifa = new JTextField(10);
+    JCheckBox chkBalcon = new JCheckBox("Balcón");
+    JTextField txtDescripcion = new JTextField(20);
+
+    String[] tiposHabitacion = {"Sencilla", "Doble", "Suite"};
+    JComboBox<String> comboTipo = new JComboBox<>(tiposHabitacion);
+
+    JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
+    panelFormulario.add(new JLabel("Identificador:"));
+    panelFormulario.add(txtIdentificador);
+    panelFormulario.add(new JLabel("Tipo:"));
+    panelFormulario.add(comboTipo);
+    panelFormulario.add(new JLabel("Capacidad:"));
+    panelFormulario.add(txtCapacidad);
+    panelFormulario.add(new JLabel("Tarifa:"));
+    panelFormulario.add(txtTarifa);
+    panelFormulario.add(chkBalcon);
+    panelFormulario.add(new JLabel("Descripción:"));
+    panelFormulario.add(txtDescripcion);
+
+    int opcion = JOptionPane.showConfirmDialog(this, panelFormulario, "Cargar Habitación",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+    if (opcion == JOptionPane.OK_OPTION) {
+        int identificador = Integer.parseInt(txtIdentificador.getText());
+        String tipoStr = (String) comboTipo.getSelectedItem();
+        int capacidad = Integer.parseInt(txtCapacidad.getText());
+        double tarifa = Double.parseDouble(txtTarifa.getText());
+        boolean balcon = chkBalcon.isSelected();
+        String descripcion = txtDescripcion.getText();
+
+        // Crear objeto Habitacion y guardar
+        Habitacion nuevaHabitacion = new Habitacion(identificador, tipoStr, capacidad, tarifa, balcon, descripcion);
+        guardarHabitacion(nuevaHabitacion);
+    }
+}
+
+// Método para guardar una habitación
+private void guardarHabitacion(Habitacion habitacion) {
+    try {
+        facade.guardarHabitacion(habitacion); // Guardar la habitación a través de la fachada
+        JOptionPane.showMessageDialog(this, "Habitación guardada correctamente.", "Éxito",
+                JOptionPane.INFORMATION_MESSAGE);
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Error al guardar la habitación.", "Error",
+                JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
+}
+
+private void buscarHabitaciones() {
+  JTextField txtIdentificador = new JTextField(10);
+  JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
+  panelFormulario.add(new JLabel("Identificador de la Habitación:"));
+  panelFormulario.add(txtIdentificador);
+
+  int opcion = JOptionPane.showConfirmDialog(this, panelFormulario, "Buscar Habitación",
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+  if (opcion == JOptionPane.OK_OPTION) {
+      try {
+          int identificador = Integer.parseInt(txtIdentificador.getText());
+          Habitacion habitacion = facade.obtenerHabitacionPorIdentificador(identificador);
+
+          if (habitacion != null) {
+              // Mostrar la información de la habitación encontrada
+              StringBuilder mensaje = new StringBuilder("Habitación Encontrada:\n");
+              mensaje.append("Identificador: ").append(habitacion.getIdentificador()).append("\n")
+                      .append("Tipo: ").append(habitacion.getTipo()).append("\n")
+                      .append("Capacidad: ").append(habitacion.getCapacidad()).append("\n")
+                      .append("Tarifa: ").append(habitacion.getTarifa()).append("\n")
+                      .append("Balcón: ").append(habitacion.isBalcon()).append("\n")
+                      .append("Descripción: ").append(habitacion.getDescripcion()).append("\n");
+
+              JOptionPane.showMessageDialog(this, mensaje.toString(), "Habitación Encontrada",
+                      JOptionPane.INFORMATION_MESSAGE);
+          } else {
+              JOptionPane.showMessageDialog(this, "No se encontró una habitación con ese identificador.", "Error",
+                      JOptionPane.ERROR_MESSAGE);
+          }
+      } catch (NumberFormatException ex) {
+          JOptionPane.showMessageDialog(this, "Ingrese un identificador válido.", "Error",
+                  JOptionPane.ERROR_MESSAGE);
+      }
+  }
+}
+
 }

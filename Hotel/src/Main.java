@@ -16,7 +16,7 @@ import ui.ViewRecepcion;
 import ui.ViewWeb;
 
 public class Main {
-  private List<Habitacion> habitaciones;
+  private static List<Habitacion> habitaciones;
   public static void main(String[] args) {
 
     habitaciones = new ArrayList<>();
