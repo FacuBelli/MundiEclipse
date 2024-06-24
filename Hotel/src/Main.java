@@ -1,7 +1,5 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -9,20 +7,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import facade.FacadeHoteleria;
-import habitacion.Habitacion;
 import ui.ViewContaduria;
 import ui.ViewMarketing;
 import ui.ViewRecepcion;
 import ui.ViewWeb;
 
 public class Main {
-  private List<Habitacion> habitaciones;
   public static void main(String[] args) {
-
-    habitaciones = new ArrayList<>();
-
-
     FacadeHoteleria facade = new FacadeHoteleria();
+
     JFrame app = new JFrame();
     app.setSize(800, 600);
     app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
