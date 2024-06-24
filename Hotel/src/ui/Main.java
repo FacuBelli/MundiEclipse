@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 public class Main {
   public static void main(String[] args) {
     JFrame app = new JFrame();
-    app.setSize(1000, 800);
+    app.setSize(500, 500);
     app.getContentPane().setLayout(new BoxLayout(app.getContentPane(), BoxLayout.Y_AXIS));
 
     JPanel viewWeb = new ViewWeb();
