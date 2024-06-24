@@ -21,6 +21,29 @@ public class MainGUI {
     private JFrame frame;
 
     public MainGUI() {
+
+        String[] roles = {"Rol1", "Rol2", "Rol3", "Rol4"};
+        String rolSeleccionado = (String) JOptionPane.showInputDialog(
+                null,
+                "Seleccione su rol",
+                "Seleccionar Rol",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                roles,
+                roles[0]
+        );
+
+        if (rolSeleccionado == null) {
+            // Si el usuario cancela la selección de rol, cerrar la aplicación
+            System.exit(0);
+        }
+
+        if (rolSeleccionado == "Rol1"){
+            frame = new JFrame("Sistema de Gestión Hotelera");
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
+
         frame = new JFrame("Sistema de Gestión Hotelera");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,7 +61,7 @@ public class MainGUI {
         });
         panel.add(btnCargarHuesped);
 
-        JButton btnCargarHabitaciones = new JButton("Cargar Habitaciones");
+        /*JButton btnCargarHabitaciones = new JButton("Cargar Habitaciones");
         btnCargarHabitaciones.addActionListener(new ManejadorCargarHabitaciones());
         panel.add(btnCargarHabitaciones);
 
@@ -54,7 +77,7 @@ public class MainGUI {
                 reservarHabitacion();
             }
         });
-        panel.add(btnReservar);
+        panel.add(btnReservar);*/
 
         JButton btnCancelar = new JButton("Cancelar Reserva");
         btnCancelar.addActionListener(new ActionListener() {
@@ -159,91 +182,9 @@ public class MainGUI {
         }
     }
 
-    // Clases internas para manejar los eventos de los botones
-    private class ManejadorCargarHabitaciones implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            handleCargarHabitaciones();
-        }
-    }
 
-    private class ManejadorBuscarHabitaciones implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            handleBuscarHabitaciones();
-        }
-    }
 
-    private class ManejadorReservarHabitacion implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            handleReservarHabitacion();
-        }
-    }
 
-    private class ManejadorCancelarReserva implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            handleCancelarReserva();
-        }
-    }
-
-    private class ManejadorActualizarFacturacion implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            handleActualizarFacturacion();
-        }
-    }
-
-    private class ManejadorEnviarFacturas implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            handleEnviarFacturas();
-        }
-    }
-
-    private class ManejadorGenerarReporte implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            handleGenerarReporte();
-        }
-    }
-
-    // Métodos para manejar las acciones de los botones
-    private void handleCargarHabitaciones() {
-        System.out.println("Cargar Habitaciones");
-        // Aquí puedes implementar la lógica para cargar las habitaciones disponibles
-    }
-
-    private void handleBuscarHabitaciones() {
-        System.out.println("Buscar Habitaciones");
-        // Aquí puedes implementar la lógica para buscar habitaciones según criterios
-    }
-
-    private void handleReservarHabitacion() {
-        System.out.println("Reservar Habitación");
-        // Aquí puedes implementar la lógica para reservar una habitación
-    }
-
-    private void handleCancelarReserva() {
-        System.out.println("Cancelar Reserva");
-        // Aquí puedes implementar la lógica para cancelar una reserva de habitación
-    }
-
-    private void handleActualizarFacturacion() {
-        System.out.println("Actualizar Facturación");
-        // Aquí puedes implementar la lógica para actualizar la facturación
-    }
-
-    private void handleEnviarFacturas() {
-        System.out.println("Enviar Facturas");
-        // Aquí puedes implementar la lógica para enviar las facturas generadas
-    }
-
-    private void handleGenerarReporte() {
-        System.out.println("Generar Reporte");
-        // Aquí puedes implementar la lógica para generar un reporte del sistema
-    }
 
 private void reservarHabitacion() {
     // Mostrar un formulario para ingresar los datos de la reserva
@@ -293,6 +234,8 @@ private void reservarHabitacion() {
             return;
         }
 
+
+        /* 
         // Verificar disponibilidad de habitaciones
         boolean habitacionDisponible = verificarDisponibilidad(fechaInicio, fechaFin, habitacionSeleccionada);
 
@@ -311,8 +254,8 @@ private void reservarHabitacion() {
                     " del " + fechaInicioStr + " al " + fechaFinStr);
         } else {
             JOptionPane.showMessageDialog(frame, "Lo sentimos, no hay habitaciones disponibles para ese periodo.");
-        }
-    }
+        } */
+    } 
 }
 
 private boolean verificarDisponibilidad(Date fechaInicio, Date fechaFin, String habitacionSeleccionada) {
