@@ -5,12 +5,23 @@ import habitacion.state.IHabitacionState;
 
 public class Habitacion {
     private int identificador;
-    private IHabitacionTipo tipo;
-    private IHabitacionState estado;
+    private String tipo; // Cambiado a String para el ejemplo
     private int capacidad;
     private double tarifa;
     private boolean balcon;
     private String descripcion;
+
+    // Constructor con parámetros
+    public Habitacion(int identificador, String tipo, int capacidad, double tarifa, boolean balcon, String descripcion) {
+        this.identificador = identificador;
+        this.tipo = tipo;
+        this.capacidad = capacidad;
+        this.tarifa = tarifa;
+        this.balcon = balcon;
+        this.descripcion = descripcion;
+    }
+
+    // Getters y setters de los campos de la clase
 
     public int getIdentificador() {
         return identificador;
@@ -20,20 +31,12 @@ public class Habitacion {
         this.identificador = identificador;
     }
 
-    public IHabitacionTipo getTipo() {
+    public String getTipo() {
         return tipo;
     }
 
-    public void setTipo(IHabitacionTipo tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    public IHabitacionState getEstado() {
-        return estado;
-    }
-
-    public void setEstado(IHabitacionState estado) {
-        this.estado = estado;
     }
 
     public int getCapacidad() {

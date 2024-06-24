@@ -51,7 +51,18 @@ public class ViewWeb extends JPanel {
           }
       });
       panel.add(btnBuscarHabitaciones);
+
+      JButton btnCargarHabitacion = new JButton("Cargar Nueva Habitación");
+        btnCargarHabitacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarFormularioCargaHabitacion();
+            }
+        });
+        panel.add(btnCargarHabitacion);
   }
+
+
 
   // Método para mostrar el formulario de carga de huésped
   private void mostrarFormularioCargaHuesped() {
@@ -104,36 +115,8 @@ public class ViewWeb extends JPanel {
       }
   }
 
-  // Método para buscar habitaciones
-  private void buscarHabitaciones() {
-      // Lógica para buscar habitaciones, puedes implementarla según tu necesidad
-      // En este ejemplo, se muestra cómo obtener las habitaciones y mostrarlas en un diálogo
-      List<Habitacion> habitaciones = facade.obtenerHabitaciones(); // Obtener las habitaciones desde la fachada
 
-      StringBuilder mensaje = new StringBuilder("Habitaciones Disponibles:\n");
-      for (Habitacion habitacion : habitaciones) {
-          mensaje.append("Identificador: ").append(habitacion.getIdentificador())
-                  .append(", Tipo: ").append(habitacion.getTipo())
-                  .append(", Estado: ").append(habitacion.getEstado())
-                  .append(", Capacidad: ").append(habitacion.getCapacidad())
-                  .append(", Tarifa: ").append(habitacion.getTarifa())
-                  .append(", Balcón: ").append(habitacion.isBalcon())
-                  .append(", Descripción: ").append(habitacion.getDescripcion())
-                  .append("\n");
-      }
-
-      JOptionPane.showMessageDialog(this, mensaje.toString(), "Habitaciones Disponibles",
-              JOptionPane.INFORMATION_MESSAGE);
-  }
-
-  // Método para guardar un huésped (debes implementar tu lógica específica)
-  private void guardarHuesped(Huesped nuevoHuesped) {
-      // Lógica para guardar un huésped, implementar según tus necesidades
-      // Aquí se muestra solo un mensaje de confirmación
-      JOptionPane.showMessageDialog(this, "Huesped guardado correctamente.", "Éxito",
-              JOptionPane.INFORMATION_MESSAGE);
-  }
-
+  // Método para mostrar el formulario de carga de habitación - Agregado el método completo
   private void mostrarFormularioCargaHabitacion() {
     JTextField txtIdentificador = new JTextField(10);
     JTextField txtCapacidad = new JTextField(10);
@@ -174,17 +157,24 @@ public class ViewWeb extends JPanel {
     }
 }
 
-// Método para guardar una habitación
+
+
+
+  // Método para guardar un huésped (debes implementar tu lógica específica)
+  private void guardarHuesped(Huesped nuevoHuesped) {
+      // Lógica para guardar un huésped, implementar según tus necesidades
+      // Aquí se muestra solo un mensaje de confirmación
+      JOptionPane.showMessageDialog(this, "Huesped guardado correctamente.", "Éxito",
+              JOptionPane.INFORMATION_MESSAGE);
+  }
+
+  
+
+// Método para guardar una habitación 
 private void guardarHabitacion(Habitacion habitacion) {
-    try {
-        facade.guardarHabitacion(habitacion); // Guardar la habitación a través de la fachada
-        JOptionPane.showMessageDialog(this, "Habitación guardada correctamente.", "Éxito",
-                JOptionPane.INFORMATION_MESSAGE);
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Error al guardar la habitación.", "Error",
-                JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    }
+    facade.guardarHabitacion(habitacion); // Guardar la habitación a través de la fachada
+    JOptionPane.showMessageDialog(this, "Habitación guardada correctamente.", "Éxito",
+            JOptionPane.INFORMATION_MESSAGE);
 }
 
 private void buscarHabitaciones() {
@@ -199,7 +189,7 @@ private void buscarHabitaciones() {
   if (opcion == JOptionPane.OK_OPTION) {
       try {
           int identificador = Integer.parseInt(txtIdentificador.getText());
-          Habitacion habitacion = facade.obtenerHabitacionPorIdentificador(identificador);
+          Habitacion habitacion = facade.obtenerHabitacion(identificador);
 
           if (habitacion != null) {
               // Mostrar la información de la habitación encontrada

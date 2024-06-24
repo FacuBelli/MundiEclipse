@@ -10,7 +10,7 @@ public class HabitacionBuilder {
   }
 
   public HabitacionBuilder clear() {
-    habitacion = new Habitacion();
+    habitacion = new Habitacion(0, null, 0, 0, false, null);
     return this;
   }
 
@@ -19,7 +19,7 @@ public class HabitacionBuilder {
     return this;
   }
 
-  public HabitacionBuilder tipo(IHabitacionTipo tipo) {
+  public HabitacionBuilder tipo(String tipo) {
     habitacion.setTipo(tipo);
     return this;
   }
