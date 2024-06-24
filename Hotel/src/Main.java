@@ -3,6 +3,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import facade.FacadeHoteleria;
 import ui.ViewContaduria;
 import ui.ViewMarketing;
 import ui.ViewRecepcion;
