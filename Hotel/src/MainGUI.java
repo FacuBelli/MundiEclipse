@@ -1,26 +1,36 @@
 import javax.swing.*;
 
-import habitacion.Habitacion;
+import habitacion.*;
 import habitacion.state.Disponible;
+import habitacion.state.IHabitacionState;
+import habitacion.tipo.IHabitacionTipo;
 import reserva.Reserva;
 import reserva.state.IReservaState;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import usuario.Huesped; 
 
 public class MainGUI {
     private JFrame frame;
+    private List<Habitacion> habitaciones;
 
     public MainGUI() {
+
+        habitaciones = new ArrayList<>();
+        
 
         String[] roles = {"Rol1", "Rol2", "Rol3", "Rol4"};
         String rolSeleccionado = (String) JOptionPane.showInputDialog(
@@ -88,6 +98,15 @@ public class MainGUI {
             }
         });
         panel.add(btnCancelar);
+
+        JButton btnCargarHabitaciones = new JButton("Cargar Habitaciones");
+        btnCargarHabitaciones.addActionListener(new ManejadorCargarHabitaciones());
+
+        JButton btnBuscarHabitaciones = new JButton("Buscar Habitaciones");
+        btnBuscarHabitaciones.addActionListener(new ManejadorBuscarHabitaciones());
+
+        panel.add(btnCargarHabitaciones);
+        panel.add(btnBuscarHabitaciones);
 
 
 
@@ -186,116 +205,143 @@ public class MainGUI {
 
 
 
-private void reservarHabitacion() {
-    // Mostrar un formulario para ingresar los datos de la reserva
-    JTextField txtNombreHuesped = new JTextField(20);
-    JTextField txtFechaInicio = new JTextField(10);
-    JTextField txtFechaFin = new JTextField(10);
+private class ManejadorCargarHabitaciones implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mostrarFormularioCargaHabitacion();
+        }
+    }
 
-    // Supongamos que tenemos una lista de habitaciones disponibles
-    String[] habitacionesDisponibles = {"101", "102", "103"};  // Esto debería obtenerse de tu sistema
-    JComboBox<String> comboHabitacion = new JComboBox<>(habitacionesDisponibles);
+    private class ManejadorBuscarHabitaciones implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mostrarDisponibilidadHabitaciones();
+        }
+    }
 
-    // Supongamos que tenemos estados posibles para una reserva
-    String[] estadosReserva = {"Activo", "Cancelado"};
-    JComboBox<String> comboEstado = new JComboBox<>(estadosReserva);
+    // Método para mostrar el formulario de carga de habitaciones
+    // Método para mostrar el formulario de carga de habitaciones
+    private void mostrarFormularioCargaHabitacion() {
+        JTextField txtIdentificador = new JTextField(10);
+        JTextField txtCapacidad = new JTextField(10);
+        JTextField txtTarifa = new JTextField(10);
+        JCheckBox chkBalcon = new JCheckBox("Balcón");
+        JTextField txtDescripcion = new JTextField(20);
 
-    JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
-    panelFormulario.add(new JLabel("Nombre del huésped:"));
-    panelFormulario.add(txtNombreHuesped);
-    panelFormulario.add(new JLabel("Fecha de inicio (dd/mm/aaaa):"));
-    panelFormulario.add(txtFechaInicio);
-    panelFormulario.add(new JLabel("Fecha de fin (dd/mm/aaaa):"));
-    panelFormulario.add(txtFechaFin);
-    panelFormulario.add(new JLabel("Habitación:"));
-    panelFormulario.add(comboHabitacion);
-    panelFormulario.add(new JLabel("Estado de la Reserva:"));
-    panelFormulario.add(comboEstado);
+        String[] tiposHabitacion = {"Sencilla", "Doble", "Suite"};
+        JComboBox<String> comboTipo = new JComboBox<>(tiposHabitacion);
 
-    int opcion = JOptionPane.showConfirmDialog(frame, panelFormulario, "Reservar Habitación",
-            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
+        panelFormulario.add(new JLabel("Identificador:"));
+        panelFormulario.add(txtIdentificador);
+        panelFormulario.add(new JLabel("Tipo:"));
+        panelFormulario.add(comboTipo);
+        panelFormulario.add(new JLabel("Capacidad:"));
+        panelFormulario.add(txtCapacidad);
+        panelFormulario.add(new JLabel("Tarifa:"));
+        panelFormulario.add(txtTarifa);
+        panelFormulario.add(chkBalcon);
+        panelFormulario.add(new JLabel("Descripción:"));
+        panelFormulario.add(txtDescripcion);
 
-    if (opcion == JOptionPane.OK_OPTION) {
-        String nombreHuesped = txtNombreHuesped.getText();
-        String fechaInicioStr = txtFechaInicio.getText();
-        String fechaFinStr = txtFechaFin.getText();
-        String habitacionSeleccionada = (String) comboHabitacion.getSelectedItem();
-        String estadoSeleccionado = (String) comboEstado.getSelectedItem();
+        int opcion = JOptionPane.showConfirmDialog(frame, panelFormulario, "Cargar Habitación",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        // Conversión de fechas
-        Date fechaInicio = null;
-        Date fechaFin = null;
+        if (opcion == JOptionPane.OK_OPTION) {
+            int identificador = Integer.parseInt(txtIdentificador.getText());
+            String tipoStr = (String) comboTipo.getSelectedItem();
+            int capacidad = Integer.parseInt(txtCapacidad.getText());
+            double tarifa = Double.parseDouble(txtTarifa.getText());
+            boolean balcon = chkBalcon.isSelected();
+            String descripcion = txtDescripcion.getText();
+
+            IHabitacionTipo tipo = new TipoHabitacion(tipoStr);
+            IHabitacionState estado = new Disponible(); // Por defecto, asignar un estado disponible
+
+            Habitacion nuevaHabitacion = new Habitacion(identificador, tipo, estado, capacidad, tarifa, balcon, descripcion);
+            habitaciones.add(nuevaHabitacion);
+
+            guardarHabitacion(nuevaHabitacion);
+            JOptionPane.showMessageDialog(frame, "Habitación cargada correctamente.");
+        }
+    }
+
+    // Método para guardar una habitación en un archivo
+    private void guardarHabitacion(Habitacion habitacion) {
+        String nombreArchivo = "habitaciones.txt";
+
         try {
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-            fechaInicio = formatoFecha.parse(fechaInicioStr);
-            fechaFin = formatoFecha.parse(fechaFinStr);
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(frame, "Formato de fecha incorrecto.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            FileWriter fw = new FileWriter(nombreArchivo, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            String datosHabitacion = habitacion.getIdentificador() + "," +
+                                     habitacion.getTipo().getClass().getSimpleName() + "," +
+                                     habitacion.getEstado().getClass().getSimpleName() + "," +
+                                     habitacion.getCapacidad() + "," +
+                                     habitacion.getTarifa() + "," +
+                                     habitacion.isBalcon() + "," +
+                                     habitacion.getDescripcion();
+
+            bw.write(datosHabitacion);
+            bw.newLine();
+
+            bw.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Error al guardar la habitación.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Método para mostrar la disponibilidad de habitaciones
+    private void mostrarDisponibilidadHabitaciones() {
+        cargarHabitacionesDesdeArchivo();  // Cargar habitaciones desde el archivo
+
+        StringBuilder mensaje = new StringBuilder("Habitaciones disponibles:\n");
+
+        for (Habitacion habitacion : habitaciones) {
+            mensaje.append("Identificador: ").append(habitacion.getIdentificador())
+                   .append(", Tipo: ").append(habitacion.getTipo().getClass().getSimpleName())
+                   .append(", Estado: ").append(habitacion.getEstado().getClass().getSimpleName())
+                   .append(", Capacidad: ").append(habitacion.getCapacidad())
+                   .append(", Tarifa: ").append(habitacion.getTarifa())
+                   .append(", Balcón: ").append(habitacion.isBalcon())
+                   .append(", Descripción: ").append(habitacion.getDescripcion())
+                   .append("\n");
         }
 
-
-        /* 
-        // Verificar disponibilidad de habitaciones
-        boolean habitacionDisponible = verificarDisponibilidad(fechaInicio, fechaFin, habitacionSeleccionada);
-
-        if (habitacionDisponible) {
-            // Crear una instancia de Huesped y Habitacion
-            Huesped huesped = new Huesped(nombre);  // Asumiendo que tienes un constructor adecuado
-            Habitacion habitacion = new Habitacion(tipo);  // Asumiendo que tienes un constructor adecuado
-
-            // Crear una instancia del estado (Aquí deberías tener lógica para convertir el string en un estado real)
-            IReservaState estado = new Activo();  // Esto es un ejemplo, ajusta según tus estados
-
-            // Crear y guardar la reserva
-            Reserva nuevaReserva = new Reserva(huesped, habitacion, fechaInicio, fechaFin, estado, 0.0);
-            guardarReserva(nuevaReserva);
-            JOptionPane.showMessageDialog(frame, "Reserva realizada correctamente para " + nombreHuesped +
-                    " del " + fechaInicioStr + " al " + fechaFinStr);
-        } else {
-            JOptionPane.showMessageDialog(frame, "Lo sentimos, no hay habitaciones disponibles para ese periodo.");
-        } */
-    } 
-}
-
-private boolean verificarDisponibilidad(Date fechaInicio, Date fechaFin, String habitacionSeleccionada) {
-    // Aquí deberías implementar la lógica para verificar la disponibilidad de habitaciones
-    // Por simplicidad, este método siempre devuelve true
-    return true;
-}
-
-private void guardarReserva(Reserva reserva) {
-    String nombreArchivo = "reservas.txt";
-
-    try {
-        FileWriter fw = new FileWriter(nombreArchivo, true);
-        BufferedWriter bw = new BufferedWriter(fw);
-
-        // Crear una cadena con los datos de la reserva
-        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-        String datosReserva = reserva.getHuesped().getNombre() + "," +
-                              reserva.getHabitacion().getIdentificador() + "," +
-                              formatoFecha.format(reserva.getFechaInicio()) + "," +
-                              formatoFecha.format(reserva.getFechaFin()) + "," +
-                              reserva.getEstado().getClass().getSimpleName();
-
-        // Escribir los datos de la reserva en el archivo
-        bw.write(datosReserva);
-        bw.newLine();  // Agregar nueva línea para separar cada reserva
-
-        // Cerrar el BufferedWriter
-        bw.close();
-
-    } catch (IOException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(frame, "Error al guardar la reserva.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame, mensaje.toString(), "Disponibilidad de Habitaciones", JOptionPane.INFORMATION_MESSAGE);
     }
-}
 
-    // Método para cancelar la reserva de una habitación
-    private void cancelarReserva() {
-        JOptionPane.showMessageDialog(frame, "Reserva cancelada presencialmente o vía web.");
-        // Aquí puedes implementar la lógica para cancelar la reserva de la habitación
+    // Método para cargar habitaciones desde el archivo
+    private void cargarHabitacionesDesdeArchivo() {
+        String nombreArchivo = "habitaciones.txt";
+        habitaciones.clear();  // Limpiar la lista antes de cargar
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(nombreArchivo));
+            String linea;
+
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                int identificador = Integer.parseInt(datos[0]);
+                IHabitacionTipo tipo = new TipoHabitacion(datos[1]);  // Ajustar según tu implementación de IHabitacionTipo
+                IHabitacionState estado = new Disponible(); // Ajustar según tu implementación de IHabitacionState
+                int capacidad = Integer.parseInt(datos[3]);
+                double tarifa = Double.parseDouble(datos[4]);
+                boolean balcon = Boolean.parseBoolean(datos[5]);
+                String descripcion = datos[6];
+
+                Habitacion habitacion = new Habitacion(identificador, tipo, estado, capacidad, tarifa, balcon, descripcion);
+                habitaciones.add(habitacion);
+            }
+
+            br.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Error al cargar las habitaciones.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
