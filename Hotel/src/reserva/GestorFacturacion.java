@@ -2,6 +2,7 @@ package reserva;
 
 import java.util.List;
 
+
 public class GestorFacturacion {
   private Reserva reserva;
   private double subtotal;
@@ -11,6 +12,7 @@ public class GestorFacturacion {
   public GestorFacturacion(Reserva reserva) {
     this.reserva = reserva;
   }
+
 
   public double calcularSubtotal() {
     long dias = Math.ceilDiv(reserva.getFechaFin().getTime() - reserva.getFechaInicio().getTime(), (long) 8.64e+7);

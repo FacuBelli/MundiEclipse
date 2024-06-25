@@ -76,4 +76,10 @@ public class Reserva {
   public void cancelar() {
     this.setEstado(new Cancelado(this));
   }
+
+  public String getCostoTotal() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getCostoTotal'");
+  }
+
 }
