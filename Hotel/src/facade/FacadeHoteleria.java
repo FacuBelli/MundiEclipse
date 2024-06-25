@@ -93,10 +93,6 @@ public class FacadeHoteleria {
     return result;
   }
 
-  public void guardarHabitacion(Habitacion habitacion) {
-    habitaciones.add(habitacion);
-}
-
   public Reserva crearReserva(Huesped huesped, Habitacion habitacion, Date fechaInicio, Date fechaFin,
       double costoTotal) {
     Reserva reserva = reservaBuilder.clear()

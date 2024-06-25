@@ -157,7 +157,7 @@ public class ViewRecepcion extends JPanel {
       this.setSize(400, 300);
       this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-      JPanel panelHabitaciones = new JPanel(new GridLayout(6, 2));
+      JPanel panelHabitaciones = new JPanel(new GridLayout(7, 2));
       txtHabitacionId = new JTextField();
       txtCapacidad = new JTextField();
       txtTarifa = new JTextField();
