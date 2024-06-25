@@ -13,6 +13,7 @@ public class ReservaBuilder {
   public ReservaBuilder clear() {
     this.reserva = new Reserva();
     reserva.setEstado(new Pendiente(reserva));
+    reserva.setFechaReserva(new Date());
     return this;
   }
 
@@ -38,6 +39,11 @@ public class ReservaBuilder {
 
   public ReservaBuilder estado(IReservaState estado) {
     reserva.setEstado(estado);
+    return this;
+  }
+
+  public ReservaBuilder fechaReserva(Date fechaReserva) {
+    reserva.setFechaReserva(fechaReserva);
     return this;
   }
 

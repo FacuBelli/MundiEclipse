@@ -14,6 +14,7 @@ public class Reserva {
   private Date fechaFin;
   private IReservaState estado;
   private GestorFacturacion gestorFacturacion;
+  private Date fechaReserva;
 
   public Reserva() {
     this.gestorFacturacion = new GestorFacturacion(this);
@@ -67,6 +68,14 @@ public class Reserva {
 
   public void setEstado(IReservaState estado) {
     this.estado = estado;
+  }
+
+  public Date getFechaReserva() {
+    return this.fechaReserva;
+  }
+
+  public void setFechaReserva(Date fechaReserva) {
+    this.fechaReserva = fechaReserva;
   }
 
   public GestorFacturacion getGestorFacturacion() {
