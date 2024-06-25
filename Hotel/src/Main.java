@@ -40,10 +40,10 @@ public class Main {
     Date startDate = new Date();
     Date endDate = new Date(startDate.getTime() + (1000 * 60 * 60 * 24 * 3)); // 3 days later
 
-    facade.crearReserva(guest1, facade.obtenerHabitacion(101), startDate, endDate, 300.0);
-    facade.crearReserva(guest2, facade.obtenerHabitacion(201), startDate, endDate, 600.0);
-    facade.crearReserva(guest3, facade.obtenerHabitacion(301), startDate, endDate, 300.0);
-    facade.crearReserva(guest4, facade.obtenerHabitacion(401), startDate, endDate, 600.0);
+    facade.crearReserva(guest1, facade.obtenerHabitacion(101), startDate, endDate);
+    facade.crearReserva(guest2, facade.obtenerHabitacion(201), startDate, endDate);
+    facade.crearReserva(guest3, facade.obtenerHabitacion(301), startDate, endDate);
+    facade.crearReserva(guest4, facade.obtenerHabitacion(401), startDate, endDate);
 
     JFrame app = new JFrame();
     app.setSize(800, 600);

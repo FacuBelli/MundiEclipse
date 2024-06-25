@@ -226,7 +226,7 @@ public class ViewRecepcion extends JPanel {
 
   private class CrearReservaFrame extends JFrame {
     private FacadeHoteleria facade;
-    private JTextField txtDni, txtHabitacionId, txtFechaInicio, txtFechaFin, txtCostoTotal;
+    private JTextField txtDni, txtHabitacionId, txtFechaInicio, txtFechaFin;
 
     public CrearReservaFrame(FacadeHoteleria facade) {
       this.facade = facade;
@@ -239,7 +239,6 @@ public class ViewRecepcion extends JPanel {
       txtHabitacionId = new JTextField();
       txtFechaInicio = new JTextField();
       txtFechaFin = new JTextField();
-      txtCostoTotal = new JTextField();
       panelReservas.add(new JLabel("DNI Huesped:"));
       panelReservas.add(txtDni);
       panelReservas.add(new JLabel("ID Habitación:"));
@@ -248,8 +247,6 @@ public class ViewRecepcion extends JPanel {
       panelReservas.add(txtFechaInicio);
       panelReservas.add(new JLabel("Fecha Fin (dd/MM/yyyy):"));
       panelReservas.add(txtFechaFin);
-      panelReservas.add(new JLabel("Costo Total:"));
-      panelReservas.add(txtCostoTotal);
 
       JButton btnCrearReserva = new JButton("Crear Reserva");
       btnCrearReserva.addActionListener(new ActionListener() {
@@ -278,9 +275,8 @@ public class ViewRecepcion extends JPanel {
         }
         Date fechaInicio = new SimpleDateFormat("dd/MM/yyyy").parse(txtFechaInicio.getText());
         Date fechaFin = new SimpleDateFormat("dd/MM/yyyy").parse(txtFechaFin.getText());
-        double costoTotal = Double.parseDouble(txtCostoTotal.getText());
 
-        Reserva reserva = facade.crearReserva(huesped, habitacion, fechaInicio, fechaFin, costoTotal);
+        Reserva reserva = facade.crearReserva(huesped, habitacion, fechaInicio, fechaFin);
         JOptionPane.showMessageDialog(this, "Reserva creada: " + reserva.getHabitacion().getIdentificador());
       } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error: Verifique los datos ingresados", "Error",

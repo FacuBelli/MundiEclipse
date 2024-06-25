@@ -42,6 +42,7 @@ public class ReservaBuilder {
   }
 
   public Reserva build() {
+    reserva.getGestorFacturacion().calcularSubtotal();
     return reserva;
   }
 }

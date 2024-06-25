@@ -11,7 +11,9 @@ import habitacion.tipo.IHabitacionTipo;
 import habitacion.tipo.Simple;
 import habitacion.tipo.Suite;
 import reserva.Factura;
+import reserva.Pago;
 import reserva.Reserva;
+import reserva.metodoDePago.Debito;
 import reserva.state.Cancelado;
 import usuario.Huesped;
 
@@ -68,7 +70,7 @@ public class FacadeHoteleriaTest {
     Habitacion habitacion = facadeHoteleria.cargarHabitacion(303, tipo, 2, 180.0, true, "Habitación con vista al mar");
     Date fechaInicio = new Date();
     Date fechaFin = new Date(fechaInicio.getTime() + 2 * 24 * 60 * 60 * 1000); // 2 días después
-    Reserva reserva = facadeHoteleria.crearReserva(huesped, habitacion, fechaInicio, fechaFin, 360.0);
+    Reserva reserva = facadeHoteleria.crearReserva(huesped, habitacion, fechaInicio, fechaFin);
     assertNotNull(reserva);
     assertEquals(huesped, reserva.getHuesped());
     assertEquals(habitacion, reserva.getHabitacion());
@@ -82,7 +84,7 @@ public class FacadeHoteleriaTest {
     Habitacion habitacion = facadeHoteleria.cargarHabitacion(404, tipo, 1, 100.0, false, "Habitación económica");
     Date fechaInicio = new Date();
     Date fechaFin = new Date(fechaInicio.getTime() + 1 * 24 * 60 * 60 * 1000); // 1 día después
-    Reserva reserva = facadeHoteleria.crearReserva(huesped, habitacion, fechaInicio, fechaFin, 100.0);
+    Reserva reserva = facadeHoteleria.crearReserva(huesped, habitacion, fechaInicio, fechaFin);
     facadeHoteleria.cancelarReserva(reserva);
     assertTrue(reserva.getEstado().getClass().equals(Cancelado.class));
   }
@@ -96,7 +98,7 @@ public class FacadeHoteleriaTest {
     Habitacion habitacion = facadeHoteleria.cargarHabitacion(505, tipo, 4, 250.0, true, "Habitación familiar");
     Date fechaInicio = new Date();
     Date fechaFin = new Date(fechaInicio.getTime() + 3 * 24 * 60 * 60 * 1000); // 3 días después
-    Reserva reserva = facadeHoteleria.crearReserva(huesped, habitacion, fechaInicio, fechaFin, 750.0);
+    Reserva reserva = facadeHoteleria.crearReserva(huesped, habitacion, fechaInicio, fechaFin);
     Factura factura = facadeHoteleria.obtenerFactura(reserva);
     assertNotNull(factura);
     assertEquals(750.0, factura.getGestorFacturacion().getSubtotal(), 0.01);
@@ -134,8 +136,8 @@ public class FacadeHoteleriaTest {
     Habitacion habitacion2 = facadeHoteleria.cargarHabitacion(202, tipo, 3, 220.0, false, "Habitación familiar");
     Date fechaInicio = new Date();
     Date fechaFin = new Date(fechaInicio.getTime() + 2 * 24 * 60 * 60 * 1000); // 2 días después
-    Reserva reserva1 = facadeHoteleria.crearReserva(huesped1, habitacion1, fechaInicio, fechaFin, 360.0);
-    Reserva reserva2 = facadeHoteleria.crearReserva(huesped2, habitacion2, fechaInicio, fechaFin, 440.0);
+    Reserva reserva1 = facadeHoteleria.crearReserva(huesped1, habitacion1, fechaInicio, fechaFin);
+    Reserva reserva2 = facadeHoteleria.crearReserva(huesped2, habitacion2, fechaInicio, fechaFin);
     assertNotNull(facadeHoteleria.obtenerReserva(habitacion1, huesped1));
     assertEquals(facadeHoteleria.obtenerReserva(habitacion1, huesped1), reserva1);
     assertNotNull(facadeHoteleria.obtenerReserva(habitacion2, huesped2));
@@ -151,7 +153,7 @@ public class FacadeHoteleriaTest {
     Habitacion habitacion = facadeHoteleria.cargarHabitacion(301, tipo, 1, 100.0, false, "Habitación económica");
     Date fechaInicio = new Date();
     Date fechaFin = new Date(fechaInicio.getTime() + 1 * 24 * 60 * 60 * 1000); // 1 día después
-    Reserva reserva = facadeHoteleria.crearReserva(huesped, habitacion, fechaInicio, fechaFin, 100.0);
+    Reserva reserva = facadeHoteleria.crearReserva(huesped, habitacion, fechaInicio, fechaFin);
     facadeHoteleria.cancelarReserva(reserva);
     assertTrue(reserva.getEstado().getClass().equals(Cancelado.class));
     Reserva retrievedReserva = facadeHoteleria.obtenerReserva(habitacion, huesped);
@@ -169,11 +171,36 @@ public class FacadeHoteleriaTest {
     Date fechaInicio = new Date();
     Date fechaFin1 = new Date(fechaInicio.getTime() + 1 * 24 * 60 * 60 * 1000); // 1 día después
     Date fechaFin2 = new Date(fechaInicio.getTime() + 2 * 24 * 60 * 60 * 1000); // 2 días después
-    Reserva reserva1 = facadeHoteleria.crearReserva(huesped, habitacion1, fechaInicio, fechaFin1, 150.0);
-    Reserva reserva2 = facadeHoteleria.crearReserva(huesped, habitacion2, fechaInicio, fechaFin2, 180.0);
+    Reserva reserva1 = facadeHoteleria.crearReserva(huesped, habitacion1, fechaInicio, fechaFin1);
+    Reserva reserva2 = facadeHoteleria.crearReserva(huesped, habitacion2, fechaInicio, fechaFin2);
     Factura factura1 = facadeHoteleria.obtenerFactura(reserva1);
     Factura factura2 = facadeHoteleria.obtenerFactura(reserva2);
     assertEquals(150.0, factura1.getGestorFacturacion().getSubtotal(), 0.01);
     assertEquals(360.0, factura2.getGestorFacturacion().getSubtotal(), 0.01);
+  }
+
+  @Test
+  public void testRealizarPago() {
+    Huesped huesped = facadeHoteleria.registrarHuesped("321321321", "David", "Miller", "555-1111", "david@example.com");
+    Habitacion habitacion = facadeHoteleria.cargarHabitacion(401, new Simple(), 2, 150.0, true,
+        "Habitación con balcón");
+    Date fechaInicio = new Date();
+    Date fechaFin = new Date(fechaInicio.getTime() + 2 * 24 * 60 * 60 * 1000); // 2 días después
+    Reserva reserva = facadeHoteleria.crearReserva(huesped, habitacion, fechaInicio, fechaFin);
+
+    Pago pago = new Pago();
+    pago.setMetodoDePago(new Debito());
+    pago.setMonto(60);
+
+    facadeHoteleria.realizarPago(reserva, pago);
+
+    // Verificar que el pago se ha agregado a la reserva
+    assertTrue(reserva.getGestorFacturacion().getPagos().contains(pago));
+
+    // Verificar que se ha procesado el pago
+    assertTrue(pago.procesarPago());
+
+    // Verificar que se ha generado una factura
+    assertNotNull(reserva.getGestorFacturacion().generarFactura());
   }
 }

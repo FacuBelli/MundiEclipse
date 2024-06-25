@@ -94,8 +94,7 @@ public class FacadeHoteleria {
     return result;
   }
 
-  public Reserva crearReserva(Huesped huesped, Habitacion habitacion, Date fechaInicio, Date fechaFin,
-      double costoTotal) {
+  public Reserva crearReserva(Huesped huesped, Habitacion habitacion, Date fechaInicio, Date fechaFin) {
     Reserva reserva = reservaBuilder.clear()
         .huesped(huesped)
         .habitacion(habitacion)
@@ -124,7 +123,14 @@ public class FacadeHoteleria {
   }
 
   public void realizarPago(Reserva reserva, Pago pago) {
-    
+    reserva.getGestorFacturacion().getPagos().add(pago);
+
+    boolean pagoProcesado = pago.procesarPago();
+
+    if (pagoProcesado) {
+      Factura factura = reserva.getGestorFacturacion().generarFactura();
+      factura.imprimir();
+    }
   }
 
   public void cancelarReserva(Reserva reserva) {

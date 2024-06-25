@@ -279,7 +279,7 @@ public class ViewWeb extends JPanel {
         // fechas)
 
         // Llamar al método para crear la reserva
-        Reserva reserva = facade.crearReserva(huesped, habitacion, new Date(), new Date(), 0.0);
+        Reserva reserva = facade.crearReserva(huesped, habitacion, new Date(), new Date());
 
         // Mostrar mensaje de confirmación
         JOptionPane.showMessageDialog(this, "Reserva realizada correctamente.", "Éxito",
@@ -395,7 +395,7 @@ public class ViewWeb extends JPanel {
       out.println("Habitacion: " + reserva.getHabitacion().getIdentificador());
       out.println("Fecha de Inicio: " + reserva.getFechaInicio());
       out.println("Fecha de Fin: " + reserva.getFechaFin());
-      out.println("Costo Total: " + reserva.getCostoTotal());
+      out.println("Costo Total: " + reserva.getGestorFacturacion().getSubtotal());
       out.println(); // línea en blanco para separar reservas
 
       System.out.println("Reserva guardada en " + nombreArchivo);
