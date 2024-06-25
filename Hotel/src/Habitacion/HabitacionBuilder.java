@@ -37,8 +37,23 @@ public class HabitacionBuilder {
     return this;
   }
 
-  public HabitacionBuilder balcon(boolean balcon) {
-    habitacion.setBalcon(balcon);
+  public HabitacionBuilder balcon(boolean bool) {
+    habitacion.setBalcon(bool);
+    return this;
+  }
+
+  public HabitacionBuilder tv(boolean bool) {
+    habitacion.setTv(bool);
+    return this;
+  }
+
+  public HabitacionBuilder toallas(boolean bool) {
+    habitacion.setToallas(bool);
+    return this;
+  }
+
+  public HabitacionBuilder despertador(boolean bool) {
+    habitacion.setDespertador(bool);
     return this;
   }
 

@@ -8,6 +8,7 @@ import habitacion.Habitacion;
 import habitacion.HabitacionBuilder;
 import habitacion.tipo.IHabitacionTipo;
 import reserva.Factura;
+import reserva.Pago;
 import reserva.Reserva;
 import reserva.ReservaBuilder;
 import usuario.Huesped;
@@ -120,6 +121,10 @@ public class FacadeHoteleria {
     }
 
     return result;
+  }
+
+  public void realizarPago(Reserva reserva, Pago pago) {
+    
   }
 
   public void cancelarReserva(Reserva reserva) {

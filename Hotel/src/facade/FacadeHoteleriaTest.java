@@ -1,4 +1,5 @@
 package facade;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testRegistrarHuesped() {
+    // Prueba la función de registrar un huésped
     Huesped huesped = facadeHoteleria.registrarHuesped("12345678", "John", "Doe", "555-1234", "john@example.com");
     assertNotNull(huesped);
     assertEquals("John", huesped.getNombre());
@@ -32,6 +34,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testObtenerHuesped() {
+    // Prueba la función de obtener un huésped por su ID
     facadeHoteleria.registrarHuesped("87654321", "Jane", "Doe", "555-5678", "jane@example.com");
     Huesped huesped = facadeHoteleria.obtenerHuesped("87654321");
     assertNotNull(huesped);
@@ -40,6 +43,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testCargarHabitacion() {
+    // Prueba la función de cargar una habitación
     IHabitacionTipo tipo = new Suite();
     Habitacion habitacion = facadeHoteleria.cargarHabitacion(101, tipo, 2, 150.0, true, "Habitación con balcón");
     assertNotNull(habitacion);
@@ -48,6 +52,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testObtenerHabitacion() {
+    // Prueba la función de obtener una habitación por su identificador
     IHabitacionTipo tipo = new Suite();
     facadeHoteleria.cargarHabitacion(202, tipo, 3, 200.0, false, "Habitación sin balcón");
     Habitacion habitacion = facadeHoteleria.obtenerHabitacion(202);
@@ -57,6 +62,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testCrearReserva() {
+    // Prueba la función de crear una reserva
     Huesped huesped = facadeHoteleria.registrarHuesped("123123123", "Alice", "Smith", "555-7890", "alice@example.com");
     IHabitacionTipo tipo = new Simple();
     Habitacion habitacion = facadeHoteleria.cargarHabitacion(303, tipo, 2, 180.0, true, "Habitación con vista al mar");
@@ -70,6 +76,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testCancelarReserva() {
+    // Prueba la función de cancelar una reserva
     Huesped huesped = facadeHoteleria.registrarHuesped("456456456", "Bob", "Johnson", "555-4567", "bob@example.com");
     IHabitacionTipo tipo = new Simple();
     Habitacion habitacion = facadeHoteleria.cargarHabitacion(404, tipo, 1, 100.0, false, "Habitación económica");
@@ -82,6 +89,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testObtenerFactura() {
+    // Prueba la función de obtener una factura para una reserva
     Huesped huesped = facadeHoteleria.registrarHuesped("789789789", "Charlie", "Brown", "555-6789",
         "charlie@example.com");
     IHabitacionTipo tipo = new Simple();
@@ -96,6 +104,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testRegistrarYObtenerMultiplesHuespedes() {
+    // Prueba la función de registrar y obtener múltiples huéspedes
     facadeHoteleria.registrarHuesped("12345678", "John", "Doe", "555-1234", "john@example.com");
     facadeHoteleria.registrarHuesped("87654321", "Jane", "Doe", "555-5678", "jane@example.com");
     List<Huesped> huespedes = facadeHoteleria.obtenerHuespedes();
@@ -104,6 +113,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testCargarYObtenerMultiplesHabitaciones() {
+    // Prueba la función de cargar y obtener múltiples habitaciones
     IHabitacionTipo tipoSimple = new Simple();
     IHabitacionTipo tipoSuite = new Suite();
     facadeHoteleria.cargarHabitacion(101, tipoSimple, 2, 150.0, true, "Habitación con balcón");
@@ -116,6 +126,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testCrearYObtenerReservas() {
+    // Prueba la función de crear y obtener reservas
     Huesped huesped1 = facadeHoteleria.registrarHuesped("Alice", "Smith", "123123123", "555-7890", "alice@example.com");
     Huesped huesped2 = facadeHoteleria.registrarHuesped("Bob", "Johnson", "456456456", "555-4567", "bob@example.com");
     IHabitacionTipo tipo = new Simple();
@@ -133,6 +144,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testCancelarYVerificarReserva() {
+    // Prueba la función de cancelar una reserva y luego verificar su estado
     Huesped huesped = facadeHoteleria.registrarHuesped("789789789", "Charlie", "Brown", "555-6789",
         "charlie@example.com");
     IHabitacionTipo tipo = new Simple();
@@ -148,6 +160,7 @@ public class FacadeHoteleriaTest {
 
   @Test
   public void testGenerarFacturaConMultiplesReservas() {
+    // Prueba la generación de facturas con múltiples reservas
     Huesped huesped = facadeHoteleria.registrarHuesped("321321321", "David", "Miller", "555-1111", "david@example.com");
     IHabitacionTipo tipo = new Simple();
     Habitacion habitacion1 = facadeHoteleria.cargarHabitacion(401, tipo, 2, 150.0, true, "Habitación con balcón");
