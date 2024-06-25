@@ -1,5 +1,7 @@
 package habitacion;
 
+import habitacion.state.Disponible;
+import habitacion.state.IHabitacionState;
 import habitacion.tipo.IHabitacionTipo;
 
 public class HabitacionBuilder {
@@ -11,6 +13,7 @@ public class HabitacionBuilder {
 
   public HabitacionBuilder clear() {
     habitacion = new Habitacion();
+    habitacion.setEstado(new Disponible(habitacion));
     return this;
   }
 
@@ -41,6 +44,11 @@ public class HabitacionBuilder {
 
   public HabitacionBuilder descripcion(String descripcion) {
     habitacion.setDescripcion(descripcion);
+    return this;
+  }
+
+  public HabitacionBuilder estado(IHabitacionState estado) {
+    habitacion.setEstado(estado);
     return this;
   }
 

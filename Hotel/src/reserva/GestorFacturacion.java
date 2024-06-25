@@ -1,5 +1,6 @@
 package reserva;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GestorFacturacion {
@@ -10,6 +11,7 @@ public class GestorFacturacion {
 
   public GestorFacturacion(Reserva reserva) {
     this.reserva = reserva;
+    pagos = new ArrayList<Pago>();
   }
 
   public double calcularSubtotal() {

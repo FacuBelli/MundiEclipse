@@ -1,6 +1,7 @@
 package ui;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,15 +13,19 @@ import habitacion.tipo.IHabitacionTipo;
 import habitacion.tipo.Simple;
 import habitacion.tipo.Suite;
 import reserva.Reserva;
+import ui.table.HabitacionTableModel;
+import ui.table.HuespedTableModel;
+import ui.table.ReservaTableModel;
 import usuario.Huesped;
 
 import java.util.Date;
+import java.util.List;
 
 public class ViewRecepcion extends JPanel {
-  private FacadeHoteleria facade;
-
   public ViewRecepcion(FacadeHoteleria facade) {
-    this.facade = facade;
+    JPanel seccionHuespedes = new JPanel();
+    seccionHuespedes.add(new JLabel("Huespedes:"));
+    seccionHuespedes.setLayout(new BoxLayout(seccionHuespedes, BoxLayout.Y_AXIS));
 
     JButton btnRegistrarHuesped = new JButton("Registrar Huesped");
     btnRegistrarHuesped.addActionListener(new ActionListener() {
@@ -28,6 +33,21 @@ public class ViewRecepcion extends JPanel {
         new RegistrarHuespedFrame(facade);
       }
     });
+    seccionHuespedes.add(btnRegistrarHuesped);
+    btnRegistrarHuesped.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+    JButton btnVerHuespedes = new JButton("Ver Huespedes");
+    btnVerHuespedes.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        new VerHuespedesFrame(facade);
+      }
+    });
+    seccionHuespedes.add(btnVerHuespedes);
+    btnVerHuespedes.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+    JPanel seccionHabitaciones = new JPanel();
+    seccionHabitaciones.add(new JLabel("Habitaciones:"));
+    seccionHabitaciones.setLayout(new BoxLayout(seccionHabitaciones, BoxLayout.Y_AXIS));
 
     JButton btnCrearHabitacion = new JButton("Crear Habitación");
     btnCrearHabitacion.addActionListener(new ActionListener() {
@@ -35,25 +55,43 @@ public class ViewRecepcion extends JPanel {
         new CrearHabitacionFrame(facade);
       }
     });
+    seccionHabitaciones.add(btnCrearHabitacion);
+    btnCrearHabitacion.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+    JButton btnVerHabitaciones = new JButton("Ver Habitaciones");
+    btnVerHabitaciones.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        new VerHabitacionesFrame(facade);
+      }
+    });
+    seccionHabitaciones.add(btnVerHabitaciones);
+    btnVerHabitaciones.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+    JPanel seccionReservas = new JPanel();
+    seccionReservas.add(new JLabel("Reservas:"));
+    seccionReservas.setLayout(new BoxLayout(seccionReservas, BoxLayout.Y_AXIS));
+    
     JButton btnCrearReserva = new JButton("Crear Reserva");
     btnCrearReserva.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         new CrearReservaFrame(facade);
       }
     });
+    seccionReservas.add(btnCrearReserva);
+    btnCrearReserva.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    JButton btnVerHuespedes = new JButton("Ver y Buscar Huespedes");
-    btnVerHuespedes.addActionListener(new ActionListener() {
+    JButton btnVerReservas = new JButton("Ver Reservas");
+    btnVerReservas.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        new VerHuespedesFrame(facade);
+        new VerReservasFrame(facade);
       }
     });
+    seccionReservas.add(btnVerReservas);
+    btnVerReservas.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    this.add(btnRegistrarHuesped);
-    this.add(btnCrearHabitacion);
-    this.add(btnCrearReserva);
-    this.add(btnVerHuespedes);
+    this.add(seccionHuespedes);
+    this.add(seccionHabitaciones);
+    this.add(seccionReservas);
   }
 
   private class RegistrarHuespedFrame extends JFrame {
@@ -171,6 +209,21 @@ public class ViewRecepcion extends JPanel {
     }
   }
 
+  private class VerHabitacionesFrame extends JFrame {
+    private JTable table;
+    private List<Habitacion> habitaciones;
+
+    public VerHabitacionesFrame(FacadeHoteleria facade) {
+      this.setTitle("Ver Habitaciones");
+      this.setSize(500, 400);
+      this.habitaciones = facade.obtenerHabitaciones();
+      table = new JTable(new HabitacionTableModel(habitaciones));
+      this.add(table);
+      this.getContentPane().add(new JScrollPane(table));
+      this.setVisible(true);
+    }
+  }
+
   private class CrearReservaFrame extends JFrame {
     private FacadeHoteleria facade;
     private JTextField txtDni, txtHabitacionId, txtFechaInicio, txtFechaFin, txtCostoTotal;
@@ -239,19 +292,21 @@ public class ViewRecepcion extends JPanel {
   private class VerHuespedesFrame extends JFrame {
     private FacadeHoteleria facade;
     private JTextField txtBuscarDni;
-    private JTextArea areaHuespedes;
+    private JTable table;
+    private List<Huesped> huespedes;
+    private List<Huesped> huespedesFiltrado;
 
     public VerHuespedesFrame(FacadeHoteleria facade) {
       this.facade = facade;
       this.setTitle("Ver y Buscar Huespedes");
       this.setSize(400, 300);
       this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+      
       JPanel panelBuscar = new JPanel(new FlowLayout());
       txtBuscarDni = new JTextField(10);
       panelBuscar.add(new JLabel("Buscar por DNI:"));
       panelBuscar.add(txtBuscarDni);
-
+      
       JButton btnBuscar = new JButton("Buscar");
       btnBuscar.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -260,29 +315,39 @@ public class ViewRecepcion extends JPanel {
       });
       panelBuscar.add(btnBuscar);
 
-      JPanel panelResultado = new JPanel(new BorderLayout());
-      areaHuespedes = new JTextArea(10, 30);
-      areaHuespedes.setEditable(false);
-      panelResultado.add(new JScrollPane(areaHuespedes), BorderLayout.CENTER);
+      this.huespedes = facade.obtenerHuespedes();
+      this.huespedesFiltrado = List.copyOf(huespedes);
+      
+      this.table = new JTable(new HuespedTableModel(huespedesFiltrado));
 
       this.add(panelBuscar, BorderLayout.NORTH);
-      this.add(panelResultado, BorderLayout.CENTER);
+      this.add(table, BorderLayout.CENTER);
       this.setVisible(true);
     }
 
     private void buscarHuesped() {
       String dni = txtBuscarDni.getText();
       Huesped huesped = facade.obtenerHuesped(dni);
+      huespedesFiltrado.clear();
       if (huesped != null) {
-        areaHuespedes.setText("Huesped encontrado:\n" +
-            "Nombre: " + huesped.getNombre() + "\n" +
-            "Apellido: " + huesped.getApellido() + "\n" +
-            "DNI: " + huesped.getDni() + "\n" +
-            "Teléfono: " + huesped.getTelefono() + "\n" +
-            "Email: " + huesped.getEmail());
-      } else {
-        areaHuespedes.setText("Huesped no encontrado.");
+        huespedesFiltrado.add(huesped);
       }
+      table.repaint();
+    }
+  }
+
+  private class VerReservasFrame extends JFrame {
+    private JTable table;
+    private List<Reserva> reservas;
+
+    public VerReservasFrame(FacadeHoteleria facade) {
+      this.setTitle("Ver y Buscar Reservas");
+      this.setSize(500, 400);
+      this.reservas = facade.obtenerReservas();
+      table = new JTable(new ReservaTableModel(reservas));
+      this.add(table);
+      this.getContentPane().add(new JScrollPane(table));
+      this.setVisible(true);
     }
   }
 }
