@@ -4,9 +4,13 @@ package ui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -15,14 +19,18 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
 
 import facade.FacadeHoteleria;
 import habitacion.Habitacion;
+import reserva.Reserva;
 import usuario.Huesped;
 
 public class ViewWeb extends JPanel {
   private FacadeHoteleria facade;
+  private static final String FILE_PATH = "huespedes.txt";
 
   public ViewWeb(FacadeHoteleria facade) {
       this.facade = facade;
@@ -51,7 +59,37 @@ public class ViewWeb extends JPanel {
           }
       });
       panel.add(btnBuscarHabitaciones);
+
+      JButton btnCargarHabitacion = new JButton("Cargar Nueva Habitación");
+        btnCargarHabitacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarFormularioCargaHabitacion();
+            }
+        });
+        panel.add(btnCargarHabitacion);
+        // BOTÓN RESERVAR HABITACIÓN - Agregado el botón y su acción
+        JButton btnReservarHabitacion = new JButton("Reservar Habitación");
+        btnReservarHabitacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reservarHabitacion();
+            }
+        });
+        panel.add(btnReservarHabitacion);
+
+        // BOTÓN VER DISPONIBILIDAD DE HABITACIONES
+    JButton btnVerDisponibilidad = new JButton("Ver Disponibilidad de Habitaciones");
+    btnVerDisponibilidad.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mostrarDisponibilidadHabitaciones();
+        }
+    });
+    panel.add(btnVerDisponibilidad);
   }
+
+
 
   // Método para mostrar el formulario de carga de huésped
   private void mostrarFormularioCargaHuesped() {
@@ -104,36 +142,8 @@ public class ViewWeb extends JPanel {
       }
   }
 
-  // Método para buscar habitaciones
-  private void buscarHabitaciones() {
-      // Lógica para buscar habitaciones, puedes implementarla según tu necesidad
-      // En este ejemplo, se muestra cómo obtener las habitaciones y mostrarlas en un diálogo
-      List<Habitacion> habitaciones = facade.obtenerHabitaciones(); // Obtener las habitaciones desde la fachada
 
-      StringBuilder mensaje = new StringBuilder("Habitaciones Disponibles:\n");
-      for (Habitacion habitacion : habitaciones) {
-          mensaje.append("Identificador: ").append(habitacion.getIdentificador())
-                  .append(", Tipo: ").append(habitacion.getTipo())
-                  .append(", Estado: ").append(habitacion.getEstado())
-                  .append(", Capacidad: ").append(habitacion.getCapacidad())
-                  .append(", Tarifa: ").append(habitacion.getTarifa())
-                  .append(", Balcón: ").append(habitacion.isBalcon())
-                  .append(", Descripción: ").append(habitacion.getDescripcion())
-                  .append("\n");
-      }
-
-      JOptionPane.showMessageDialog(this, mensaje.toString(), "Habitaciones Disponibles",
-              JOptionPane.INFORMATION_MESSAGE);
-  }
-
-  // Método para guardar un huésped (debes implementar tu lógica específica)
-  private void guardarHuesped(Huesped nuevoHuesped) {
-      // Lógica para guardar un huésped, implementar según tus necesidades
-      // Aquí se muestra solo un mensaje de confirmación
-      JOptionPane.showMessageDialog(this, "Huesped guardado correctamente.", "Éxito",
-              JOptionPane.INFORMATION_MESSAGE);
-  }
-
+  // Método para mostrar el formulario de carga de habitación - Agregado el método completo
   private void mostrarFormularioCargaHabitacion() {
     JTextField txtIdentificador = new JTextField(10);
     JTextField txtCapacidad = new JTextField(10);
@@ -174,54 +184,220 @@ public class ViewWeb extends JPanel {
     }
 }
 
-// Método para guardar una habitación
-private void guardarHabitacion(Habitacion habitacion) {
-    try {
-        facade.guardarHabitacion(habitacion); // Guardar la habitación a través de la fachada
-        JOptionPane.showMessageDialog(this, "Habitación guardada correctamente.", "Éxito",
+private void mostrarDisponibilidadHabitaciones() {
+    // Pedir fechas de inicio y fin para la disponibilidad
+    JSpinner spinnerFechaInicio = new JSpinner(new SpinnerDateModel());
+    JSpinner spinnerFechaFin = new JSpinner(new SpinnerDateModel());
+
+    JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
+    panelFormulario.add(new JLabel("Fecha de Inicio:"));
+    panelFormulario.add(spinnerFechaInicio);
+    panelFormulario.add(new JLabel("Fecha de Fin:"));
+    panelFormulario.add(spinnerFechaFin);
+
+    int opcion = JOptionPane.showConfirmDialog(this, panelFormulario, "Ver Disponibilidad de Habitaciones",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+    if (opcion == JOptionPane.OK_OPTION) {
+        Date fechaInicio = (Date) spinnerFechaInicio.getValue();
+        Date fechaFin = (Date) spinnerFechaFin.getValue();
+
+        // Llamar a la fachada para obtener la disponibilidad de habitaciones
+        List<Habitacion> habitacionesDisponibles = facade.verDisponibilidadHabitaciones(fechaInicio, fechaFin);
+
+        // Mostrar las habitaciones disponibles
+        StringBuilder mensaje = new StringBuilder("Habitaciones Disponibles:\n");
+        if (habitacionesDisponibles.isEmpty()) {
+            mensaje.append("No hay habitaciones disponibles para las fechas seleccionadas.");
+        } else {
+            for (Habitacion habitacion : habitacionesDisponibles) {
+                mensaje.append("Identificador: ").append(habitacion.getIdentificador()).append("\n")
+                        .append("Tipo: ").append(habitacion.getTipo()).append("\n")
+                        .append("Capacidad: ").append(habitacion.getCapacidad()).append("\n")
+                        .append("Tarifa: ").append(habitacion.getTarifa()).append("\n")
+                        .append("Balcón: ").append(habitacion.isBalcon()).append("\n")
+                        .append("Descripción: ").append(habitacion.getDescripcion()).append("\n\n");
+            }
+        }
+
+        JOptionPane.showMessageDialog(this, mensaje.toString(), "Disponibilidad de Habitaciones",
                 JOptionPane.INFORMATION_MESSAGE);
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Error al guardar la habitación.", "Error",
-                JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
     }
 }
 
-private void buscarHabitaciones() {
-  JTextField txtIdentificador = new JTextField(10);
-  JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
-  panelFormulario.add(new JLabel("Identificador de la Habitación:"));
-  panelFormulario.add(txtIdentificador);
 
-  int opcion = JOptionPane.showConfirmDialog(this, panelFormulario, "Buscar Habitación",
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+    // Método para reservar una habitación
+    private void reservarHabitacion() {
+        JTextField txtIdentificador = new JTextField(10);
+        JTextField txtDni = new JTextField(10);
 
-  if (opcion == JOptionPane.OK_OPTION) {
-      try {
-          int identificador = Integer.parseInt(txtIdentificador.getText());
-          Habitacion habitacion = facade.obtenerHabitacionPorIdentificador(identificador);
+        JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
+        panelFormulario.add(new JLabel("Identificador de la Habitación:"));
+        panelFormulario.add(txtIdentificador);
+        panelFormulario.add(new JLabel("DNI del Huésped:"));
+        panelFormulario.add(txtDni);
 
-          if (habitacion != null) {
-              // Mostrar la información de la habitación encontrada
-              StringBuilder mensaje = new StringBuilder("Habitación Encontrada:\n");
-              mensaje.append("Identificador: ").append(habitacion.getIdentificador()).append("\n")
-                      .append("Tipo: ").append(habitacion.getTipo()).append("\n")
-                      .append("Capacidad: ").append(habitacion.getCapacidad()).append("\n")
-                      .append("Tarifa: ").append(habitacion.getTarifa()).append("\n")
-                      .append("Balcón: ").append(habitacion.isBalcon()).append("\n")
-                      .append("Descripción: ").append(habitacion.getDescripcion()).append("\n");
+        int opcion = JOptionPane.showConfirmDialog(this, panelFormulario, "Reservar Habitación",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-              JOptionPane.showMessageDialog(this, mensaje.toString(), "Habitación Encontrada",
-                      JOptionPane.INFORMATION_MESSAGE);
-          } else {
-              JOptionPane.showMessageDialog(this, "No se encontró una habitación con ese identificador.", "Error",
-                      JOptionPane.ERROR_MESSAGE);
-          }
-      } catch (NumberFormatException ex) {
-          JOptionPane.showMessageDialog(this, "Ingrese un identificador válido.", "Error",
-                  JOptionPane.ERROR_MESSAGE);
-      }
+        if (opcion == JOptionPane.OK_OPTION) {
+            try {
+                int identificador = Integer.parseInt(txtIdentificador.getText());
+                String dni = txtDni.getText();
+
+                // Obtener el huésped y la habitación
+                Huesped huesped = buscarHuespedPorDNI(dni);
+                Habitacion habitacion = facade.obtenerHabitacion(identificador);
+
+                if (huesped == null) {
+                    JOptionPane.showMessageDialog(this, "No se encontró un huésped con ese DNI.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if (habitacion == null) {
+                    JOptionPane.showMessageDialog(this, "No se encontró una habitación con ese identificador.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Obtener fechas de reserva (aquí debes implementar la lógica para obtener las fechas)
+
+                // Llamar al método para crear la reserva
+                Reserva reserva = facade.crearReserva(huesped, habitacion, new Date(), new Date(), 0.0);
+
+                // Mostrar mensaje de confirmación
+                JOptionPane.showMessageDialog(this, "Reserva realizada correctamente.", "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Ingrese un identificador válido.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    
+    }
+
+
+
+  // Método para guardar un huésped (debes implementar tu lógica específica)
+  private void guardarHuesped(Huesped nuevoHuesped) {
+      // Lógica para guardar un huésped, implementar según tus necesidades
+      // Aquí se muestra solo un mensaje de confirmación
+      JOptionPane.showMessageDialog(this, "Huesped guardado correctamente.", "Éxito",
+              JOptionPane.INFORMATION_MESSAGE);
   }
+
+  
+
+// Método para guardar una habitación 
+private void guardarHabitacion(Habitacion habitacion) {
+    facade.guardarHabitacion(habitacion); // Guardar la habitación a través de la fachada
+    JOptionPane.showMessageDialog(this, "Habitación guardada correctamente.", "Éxito",
+            JOptionPane.INFORMATION_MESSAGE);
 }
 
+private void buscarHabitaciones() {
+    JTextField txtIdentificador = new JTextField(10);
+    JPanel panelFormulario = new JPanel(new GridLayout(0, 1));
+    panelFormulario.add(new JLabel("Identificador de la Habitación:"));
+    panelFormulario.add(txtIdentificador);
+
+    int opcion = JOptionPane.showConfirmDialog(this, panelFormulario, "Buscar Habitación",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+    if (opcion == JOptionPane.OK_OPTION) {
+        try {
+            int identificador = Integer.parseInt(txtIdentificador.getText());
+            Habitacion habitacion = facade.obtenerHabitacion(identificador);
+
+            if (habitacion != null) {
+                // Mostrar la información de la habitación encontrada
+                StringBuilder mensaje = new StringBuilder("Habitación Encontrada:\n");
+                mensaje.append("Identificador: ").append(habitacion.getIdentificador()).append("\n")
+                        .append("Tipo: ").append(habitacion.getTipo()).append("\n")
+                        .append("Capacidad: ").append(habitacion.getCapacidad()).append("\n")
+                        .append("Tarifa: ").append(habitacion.getTarifa()).append("\n")
+                        .append("Balcón: ").append(habitacion.isBalcon()).append("\n")
+                        .append("Descripción: ").append(habitacion.getDescripcion()).append("\n");
+
+                JOptionPane.showMessageDialog(this, mensaje.toString(), "Habitación Encontrada",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró una habitación con ese identificador.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Ingrese un identificador válido.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
+
+// Método para buscar un huésped por DNI en el archivo huespedes.txt
+    private Huesped buscarHuespedPorDNI(String dni) {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader("huespedes.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] datos = line.split(",");
+                if (datos.length >= 8 && datos[0].trim().equals(dni.trim())) {
+                    // Encontramos el huésped con el DNI buscado
+                    String nombre = datos[1].trim();
+                    String apellido = datos[2].trim();
+                    String telefono = datos[3].trim();
+                    String email = datos[4].trim();
+                    boolean contactoSMS = Boolean.parseBoolean(datos[5].trim());
+                    boolean contactoWhatsApp = Boolean.parseBoolean(datos[6].trim());
+                    boolean contactoEmail = Boolean.parseBoolean(datos[7].trim());
+
+                    // Crear objeto Huesped y devolverlo
+                    Huesped huesped = new Huesped(dni, nombre, apellido, telefono, email);
+                    huesped.setContactoSMS(contactoSMS);
+                    huesped.setContactoWhatsApp(contactoWhatsApp);
+                    huesped.setContactoEmail(contactoEmail);
+                    return huesped;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Manejar la excepción según tus necesidades (por ejemplo, mostrar un mensaje de error)
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        // Si no se encontró el huésped con el DNI buscado, devolvemos null
+        return null;
+  
+}
+
+public static void guardarReserva(Reserva reserva) {
+        String nombreArchivo = "reservas.txt";
+
+        try (FileWriter fw = new FileWriter(nombreArchivo, true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+
+            // Escribir los datos de la reserva en el archivo
+            out.println("Reserva:");
+            out.println("Huesped: " + reserva.getHuesped().getNombre() + " " + reserva.getHuesped().getApellido());
+            out.println("Habitacion: " + reserva.getHabitacion().getIdentificador());
+            out.println("Fecha de Inicio: " + reserva.getFechaInicio());
+            out.println("Fecha de Fin: " + reserva.getFechaFin());
+            out.println("Costo Total: " + reserva.getCostoTotal());
+            out.println(); // línea en blanco para separar reservas
+
+            System.out.println("Reserva guardada en " + nombreArchivo);
+
+        } catch (IOException e) {
+            System.err.println("Error al guardar la reserva: " + e.getMessage());
+        }
+    }
+}
+
